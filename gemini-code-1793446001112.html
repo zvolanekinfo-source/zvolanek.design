@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>zvolánek.design</title>
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #000000;
+            --gray-border: #000000; 
+            --gray-text: #767676;
+            --gray-light: #ffffff;
+            --font-main: "Neue Haas Grotesk Text Pro", "Neue Haas Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            --container-max: 1600px;
+            --header-height: 75px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            overflow-x: hidden;
+            background-color: var(--bg-color);
+        }
+
+        body {
+            font-family: var(--font-main);
+            color: var(--text-color);
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* LOGIKA PŘEPÍNÁNÍ JAZYKŮ */
+        body.lang-cs [lang="en"] { display: none !important; }
+        body.lang-en [lang="cs"] { display: none !important; }
+
+        h1, h2, h3, button, input, select, textarea, .project-title, .nav-links a, .filter-btn, .lang-switch, .view-more-link {
+            font-family: var(--font-main);
+        }
+
+        .site-container {
+            max-width: var(--container-max);
+            width: 100%;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* FIXED HEADER */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            z-index: 1000;
+            background-color: var(--bg-color);
+            transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, border-color 0.3s ease;
+        }
+
+        header.header-hidden {
+            transform: translateY(-100%);
+        }
+
+        header.header-transparent {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0) 100%) !important;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: var(--header-height);
+            border-bottom: 1px solid var(--gray-border);
+            transition: border-color 0.3s ease;
+        }
+
+        header.header-transparent .nav-container {
+            border-bottom-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 18px;
+            font-weight: 500;
+            padding-bottom: 0px;
+            position: relative;
+            border-bottom: 2px solid transparent; 
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        header.header-transparent .nav-links a {
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            border-bottom: 2px solid var(--text-color);
+        }
+
+        header.header-transparent .nav-links a.active,
+        header.header-transparent .nav-links a:hover {
+            border-bottom-color: #ffffff;
+        }
+
+        body.home-active .nav-links a[data-target="domu"].active,
+        body.home-active .nav-links a[data-target="domu"]:hover {
+            border-bottom-color: transparent !important;
+        }
+
+        .lang-switch {
+            background: none;
+            border: none;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+            color: var(--text-color);
+            padding-bottom: 0px;
+            border-bottom: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+
+        header.header-transparent .lang-switch {
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+        }
+
+        .lang-switch:hover {
+            border-bottom: 2px solid var(--text-color);
+            opacity: 1;
+        }
+
+        header.header-transparent .lang-switch:hover {
+            border-bottom-color: #ffffff;
+            opacity: 1;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        #sluzby, #ome, #proces, #kontakt, #detail, #ochrana-udaju {
+            padding-top: calc(var(--header-height) + 40px);
+            padding-bottom: 60px;
+        }
+
+        .page-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        .page-title-large {
+            font-size: 44px;
+            font-weight: 500;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .page-content-col {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .styled-text-block {
+            box-sizing: border-box;
+            color: rgb(20, 20, 20);
+            display: block;
+            font-family: "Neue Haas Grotesk Text Pro", Arial, Helvetica, sans-serif;
+            font-size: 22px;
+            font-style: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            line-height: 28.6px;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            text-rendering: optimizelegibility;
+        }
+
+        .styled-text-block a {
+            color: rgb(20, 20, 20);
+            text-decoration: none;
+            transition: none;
+        }
+
+        .styled-text-block a:hover {
+            opacity: 1;
+        }
+
+        .billing-info {
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .billing-title {
+            font-weight: 400; 
+            margin-bottom: 4px;
+            color: var(--text-color);
+        }
+
+        .about-styled-text a.inline-work-link {
+            color: rgb(20, 20, 20);
+            text-decoration: underline;
+            text-decoration-color: rgb(20, 20, 20);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: none;
+        }
+
+        .about-styled-text a.inline-work-link:hover {
+            opacity: 1;
+        }
+
+        .services-list, .about-list {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .service-item, .about-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .home-about-text, .intro-styled-text, .service-styled-text, .about-styled-text {
+            box-sizing: border-box;
+            color: rgb(20, 20, 20);
+            display: block;
+            font-family: "Neue Haas Grotesk Text Pro", Arial, Helvetica, sans-serif;
+            font-size: 22px;
+            font-style: normal;
+            font-weight: 400;
+            letter-spacing: normal;
+            line-height: 28.6px;
+            margin-top: 0px;
+            margin-bottom: 10px;
+            text-rendering: optimizelegibility;
+        }
+
+        .about-image-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 80px; 
+        }
+
+        .about-profile-img {
+            max-width: 100%;
+            width: 540px;
+            height: auto;
+            display: block;
+            border-radius: 0px;
+        }
+
+        .about-categories-section {
+            margin-top: 80px;
+            padding-top: 80px;
+            border-top: 1px solid var(--gray-border);
+        }
+
+        .about-categories-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 40px; 
+            font-size: 32px;
+            line-height: 1.2;
+        }
+
+        .about-categories-list a {
+            color: var(--text-color);
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            transition: text-decoration-color 0.2s;
+            justify-self: start;
+        }
+
+        .about-categories-list a:hover {
+            text-decoration-color: var(--text-color); 
+        }
+
+        .process-steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .process-steps-list p strong {
+            font-size: 20px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        #prace {
+            padding-top: calc(var(--header-height) + 24px); 
+            padding-bottom: 40px;
+        }
+
+        #domu {
+            padding-top: 0;
+        }
+
+        .policy-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .policy-content h2 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-top: 40px;
+            margin-bottom: 16px;
+        }
+        .policy-content p, .policy-content ul {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgb(40, 40, 40);
+            margin-bottom: 20px;
+        }
+        .policy-content ul {
+            padding-left: 24px;
+        }
+        .policy-content li {
+            margin-bottom: 8px;
+        }
+
+        .hero-section-wrapper {
+            width: 100vw;
+            height: 650px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+            background-color: var(--bg-color);
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
+        }
+
+        .hero-carousel-track {
+            display: flex;
+            width: max-content;
+            height: 100%;
+            gap: 0;
+            will-change: transform;
+        }
+
+        .hero-card {
+            flex: 0 0 33.333333vw;
+            width: 33.333333vw;
+            height: 100%;
+            background-color: var(--bg-color);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            margin: 0;
+            padding: 0;
+            border: none;
+            outline: none;
+        }
+
+        .hero-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border: none;
+            border-radius: 0px;
+        }
+
+        .rapid-stack {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background-color: var(--bg-color);
+        }
+
+        .stack-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1;
+            border-radius: 0px;
+        }
+
+        .stack-image.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 3;
+        }
+
+        .home-intro-block {
+            padding: 10px 0 40px 0;
+        }
+
+        .section-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-top: 1px solid var(--gray-border);
+            padding-top: 24px;
+            padding-bottom: 24px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--gray-border);
+        }
+
+        .section-title-large {
+            font-size: 44px;
+            font-weight: 500;
+            letter-spacing: -1px;
+        }
+
+        .view-more-link {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-color);
+            text-decoration: underline;
+            text-decoration-color: var(--text-color);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-bottom: 8px;
+            transition: none;
+        }
+
+        .view-more-link:hover {
+            opacity: 1;
+        }
+        
+        .view-more-bottom {
+            margin-top: 40px;
+            margin-bottom: 60px;
+            display: block;
+        }
+
+        .filters {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 24px; 
+            font-size: 18px;
+            flex-wrap: wrap;
+            padding-bottom: 0;
+        }
+
+        .filter-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--text-color);
+            padding-bottom: 0px;
+            border-bottom: 2px solid transparent; 
+            font-weight: 400;
+            transition: border-color 0.2s;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            border-bottom: 2px solid var(--text-color);
+        }
+
+        .home-projects-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px 24px;
+        }
+
+        .all-projects-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 32px 16px;
+        }
+        
+        .project-card {
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .project-media {
+            width: 100%;
+            aspect-ratio: 4 / 5;
+            background-color: var(--bg-color);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .project-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0px;
+        }
+
+        .project-meta-title {
+            font-size: 18px;
+            font-weight: 500;
+            display: inline-block;
+            width: fit-content;
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            transition: text-decoration-color 0.2s;
+        }
+
+        .project-meta-title:hover {
+            text-decoration-color: var(--text-color);
+        }
+
+        .home-about-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            padding-top: 40px;
+            margin-bottom: 60px;
+            border-top: 1px solid var(--gray-border);
+        }
+
+        .home-about-title {
+            font-size: 44px;
+            font-weight: 500;
+            letter-spacing: -1px;
+        }
+
+        .home-about-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .detail-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            margin-bottom: 60px;
+            align-items: start;
+        }
+
+        .detail-title {
+            font-size: 44px;
+            font-weight: 500;
+            letter-spacing: -1px;
+            line-height: 1.1;
+        }
+
+        .detail-description {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .detail-credits {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 32px;
+        }
+
+        .detail-socials {
+            display: flex;
+            gap: 20px;
+            font-size: 15px;
+            margin-top: 24px;
+        }
+
+        .detail-socials a {
+            color: var(--text-color);
+            text-decoration: underline;
+            text-decoration-color: transparent;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            transition: text-decoration-color 0.2s;
+        }
+
+        .detail-socials a:hover {
+            text-decoration-color: var(--text-color);
+            opacity: 1;
+        }
+
+        .detail-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            margin-bottom: 80px;
+        }
+
+        .detail-gallery img {
+            width: 100%;
+            display: block;
+            border-radius: 0px;
+        }
+
+        .detail-gallery-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .brand-banner-section {
+            border-top: 1px solid var(--gray-border);
+            border-bottom: 1px solid var(--gray-border);
+            padding: 40px 0;
+            margin: 60px 0;
+            text-align: center;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .brand-banner-title {
+            font-size: clamp(48px, 11vw, 175px);
+            font-weight: 400;
+            letter-spacing: -0.04em;
+            line-height: 0.9;
+            text-transform: lowercase;
+            width: 100%;
+            display: block;
+            white-space: nowrap;
+        }
+
+        footer {
+            padding-bottom: 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 40px;
+            font-size: 16px;
+            padding-bottom: 60px;
+        }
+
+        .footer-col .styled-text-block {
+            font-size: 22px;
+            line-height: 28.6px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-col ul li a {
+            font-family: var(--font-main);
+            font-size: 22px;
+            font-weight: 400;
+            line-height: 28.6px;
+            color: rgb(20, 20, 20);
+            text-decoration: none;
+            transition: none;
+        }
+
+        .footer-col ul li a:hover {
+            opacity: 1;
+            text-decoration: none;
+        }
+
+        .footer-col-right {
+            text-align: right;
+        }
+
+        .footer-col-right ul {
+            align-items: flex-end;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid var(--gray-border);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px; 
+            color: var(--text-color); 
+        }
+
+        .footer-bottom a {
+            color: var(--text-color); 
+            text-decoration: none; 
+            font-size: 16px;
+            transition: none;
+        }
+
+        .footer-bottom a:hover {
+            color: var(--text-color);
+            text-decoration: none;
+            opacity: 1;
+        }
+
+        /* --- PROFESIONÁLNÍ COOKIE BANNER --- */
+        #cookie-banner {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            max-width: 440px;
+            width: calc(100% - 60px);
+            background-color: #ffffff;
+            border: none;
+            padding: 30px;
+            z-index: 9999;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08); 
+            display: none; 
+        }
+
+        .cookie-title {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 14px;
+            color: rgb(20, 20, 20);
+        }
+
+        .cookie-text {
+            font-size: 15px;
+            line-height: 1.5;
+            color: rgb(40, 40, 40);
+            margin-bottom: 24px;
+            font-family: var(--font-main);
+        }
+
+        .cookie-text a {
+            color: rgb(20, 20, 20);
+            text-decoration: underline;
+        }
+
+        .cookie-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .cookie-btn {
+            flex: 1;
+            padding: 14px 16px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            font-family: var(--font-main);
+            text-align: center;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .cookie-btn-primary {
+            background-color: #141414;
+            color: #ffffff;
+        }
+
+        .cookie-btn-primary:hover {
+            background-color: #333333;
+        }
+
+        .cookie-btn-secondary {
+            background-color: #f1f1f1;
+            color: #141414;
+        }
+
+        .cookie-btn-secondary:hover {
+            background-color: #e2e2e2;
+        }
+
+        .cookie-reset-link {
+            font-family: var(--font-main);
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-color);
+            text-decoration: underline;
+            text-decoration-color: var(--text-color);
+            text-decoration-thickness: 2px;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            margin-top: 20px;
+            transition: none;
+        }
+
+        .cookie-reset-link:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 1024px) {
+            .home-projects-grid, .all-projects-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero-card {
+                flex: 0 0 50vw;
+                width: 50vw;
+            }
+            .page-layout, .detail-header, .footer-grid, .home-about-section {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+            .footer-col-right {
+                text-align: left;
+            }
+            .footer-col-right ul {
+                align-items: flex-start;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .home-projects-grid, .all-projects-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-card {
+                flex: 0 0 100vw;
+                width: 100vw;
+            }
+            #cookie-banner {
+                bottom: 15px;
+                left: 15px;
+                width: calc(100% - 30px);
+                padding: 20px;
+            }
+            .cookie-buttons {
+                flex-direction: column;
+            }
+            .nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+                justify-content: center;
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body class="home-active lang-cs"> <!-- TŘÍDA lang-cs ŘÍDÍ VÝCHOZÍ JAZYK -->
+
+    <!-- COOKIE BANNER -->
+    <div id="cookie-banner">
+        <div class="cookie-title">
+            <span lang="cs">Používáme cookies!</span>
+            <span lang="en">We use cookies!</span>
+        </div>
+        <div class="cookie-text">
+            <span lang="cs">Abychom vám usnadnili procházení stránek a mohli anonymně analyzovat návštěvnost, využíváme soubory cookies. Podrobnější informace najdete v našem <a href="#" onclick="goToSection('ochrana-udaju'); return false;">Prohlášení o ochraně osobních údajů</a>. Souhlasíte s používáním cookies?</span>
+            <span lang="en">To make your browsing easier and to anonymously analyze traffic, we use cookies. Detailed information can be found in our <a href="#" onclick="goToSection('ochrana-udaju'); return false;">Privacy Policy</a>. Do you agree to the use of cookies?</span>
+        </div>
+        <div class="cookie-buttons">
+            <button class="cookie-btn cookie-btn-primary" id="cookie-accept-all">
+                <span lang="cs">Povolit vše</span>
+                <span lang="en">Accept All</span>
+            </button>
+            <button class="cookie-btn cookie-btn-secondary" id="cookie-accept-essential">
+                <span lang="cs">Povolit povinné</span>
+                <span lang="en">Accept Essential</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- HLAVIČKA -->
+    <header id="main-header" class="header-transparent">
+        <div class="site-container">
+            <div class="nav-container">
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link active" data-target="domu">zvolánek.design</a></li>
+                    <li><a href="#" class="nav-link" data-target="prace">
+                        <span lang="cs">Práce</span><span lang="en">Work</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-target="sluzby">
+                        <span lang="cs">Služby</span><span lang="en">Services</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-target="ome">
+                        <span lang="cs">O mně</span><span lang="en">About</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-target="proces">
+                        <span lang="cs">Proces</span><span lang="en">Process</span>
+                    </a></li>
+                    <li><a href="#" class="nav-link" data-target="kontakt">
+                        <span lang="cs">Kontakt</span><span lang="en">Contact</span>
+                    </a></li>
+                </ul>
+                <button class="lang-switch" id="lang-toggle-btn">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- OBSAH -->
+    <main>
+
+        <!-- DOMŮ (HOME) -->
+        <section id="domu" class="section active">
+            <div class="hero-section-wrapper">
+                <div class="hero-carousel-track" id="hero-track">
+                    <div class="hero-card" onclick="openDetail('Colours of Ostrava 2025')">
+                        <div class="rapid-stack" data-stack="1">
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" class="stack-image active" alt="Colours 1">
+                            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80" class="stack-image" alt="Colours 2">
+                            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=80" class="stack-image" alt="Colours 3">
+                        </div>
+                    </div>
+                    <div class="hero-card" onclick="openDetail('59. MFF Karlovy Vary')">
+                        <div class="rapid-stack" data-stack="2">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80" class="stack-image active" alt="MFF 1">
+                            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=80" class="stack-image" alt="MFF 2">
+                        </div>
+                    </div>
+                    <div class="hero-card" onclick="openDetail('Avenga')">
+                        <div class="rapid-stack" data-stack="3">
+                            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=80" class="stack-image active" alt="Avenga 1">
+                            <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=1200&q=80" class="stack-image" alt="Avenga 2">
+                        </div>
+                    </div>
+                    <!-- Duplikáty pro loop... -->
+                    <div class="hero-card" onclick="openDetail('Colours of Ostrava 2025')">
+                        <div class="rapid-stack">
+                            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80" class="stack-image active" alt="Colours 1">
+                        </div>
+                    </div>
+                    <div class="hero-card" onclick="openDetail('59. MFF Karlovy Vary')">
+                        <div class="rapid-stack">
+                            <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1200&q=80" class="stack-image active" alt="MFF 1">
+                        </div>
+                    </div>
+                    <div class="hero-card" onclick="openDetail('Avenga')">
+                        <div class="rapid-stack">
+                            <img src="https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=1200&q=80" class="stack-image active" alt="Avenga 1">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="site-container">
+                <div class="content-block home-intro-block">
+                    <div class="intro-styled-text" lang="cs">
+                        Nejdřív řád. Pak teprve krása. Každý prvek má své místo, od&nbsp;prvního náčrtu<br>
+                        po&nbsp;hotový výrobek. Navrhuju vizuální identity a&nbsp;grafický design<br>
+                        s&nbsp;důrazem na&nbsp;švýcarskou typografii a&nbsp;zajišťuju jejich výrobu.<br>
+                        <br>
+                        Jsem Denis Zvolánek.
+                    </div>
+                    <div class="intro-styled-text" lang="en">
+                        Order first. Beauty follows. Every element has its place, from the first sketch<br>
+                        to&nbsp;the finished product. I design visual identities and graphic design<br>
+                        with an emphasis on&nbsp;Swiss typography and manage their production.<br>
+                        <br>
+                        I am Denis Zvolánek.
+                    </div>
+                    <button class="view-more-link" style="margin-top: 16px;" onclick="goToSection('proces')">
+                        <span lang="cs">Zobrazit více</span><span lang="en">View more</span>
+                    </button>
+                </div>
+
+                <div class="section-header-row">
+                    <div class="section-title-large">
+                        <span lang="cs">Mé práce</span><span lang="en">My Work</span>
+                    </div>
+                    <button class="view-more-link" onclick="goToSection('prace')">
+                        <span lang="cs">Zobrazit více</span><span lang="en">View all work</span>
+                    </button>
+                </div>
+
+                <div class="filters">
+                    <button class="filter-btn active" data-filter="vse"><span lang="cs">Vše</span><span lang="en">All</span></button>
+                    <button class="filter-btn" data-filter="logo">Logo</button>
+                    <button class="filter-btn" data-filter="identita"><span lang="cs">Vizuální identita</span><span lang="en">Visual Identity</span></button>
+                    <button class="filter-btn" data-filter="motion">Motion</button>
+                    <button class="filter-btn" data-filter="web">Web</button>
+                    <button class="filter-btn" data-filter="pismo"><span lang="cs">Písmo</span><span lang="en">Typeface</span></button>
+                    <button class="filter-btn" data-filter="publikace"><span lang="cs">Publikace</span><span lang="en">Publications</span></button>
+                    <button class="filter-btn" data-filter="festival">Festival</button>
+                    <button class="filter-btn" data-filter="design">Design</button>
+                </div>
+
+                <div class="home-projects-grid" id="home-projects-container">
+                </div>
+
+                <button class="view-more-link view-more-bottom" onclick="goToSection('prace')">
+                    <span lang="cs">Zobrazit více</span><span lang="en">View all work</span>
+                </button>
+
+                <div class="home-about-section">
+                    <div class="home-about-title">
+                        <span lang="cs">Kdo jsem</span><span lang="en">Who I am</span>
+                    </div>
+                    <div class="home-about-content">
+                        <div class="home-about-text" lang="cs">
+                            Jsem grafický designér zaměřující se na&nbsp;čistou typografii, minimalistický layout a&nbsp;funkční digitální řešení. Spolupracuji s&nbsp;produkčními specialisty, ilustrátory, fotografy a&nbsp;dalšími profesionály v&nbsp;kreativních oblastech.
+                        </div>
+                        <div class="home-about-text" lang="en">
+                            I am a graphic designer focusing on&nbsp;clean typography, minimalist layouts, and functional digital solutions. I collaborate with production specialists, illustrators, photographers, and other professionals in creative fields.
+                        </div>
+                        <button class="view-more-link" onclick="goToSection('ome')">
+                            <span lang="cs">Zjistit více</span><span lang="en">Find out more</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PRÁCE (WORK) -->
+        <section id="prace" class="section">
+            <div class="site-container">
+                <div class="filters" id="prace-filters">
+                    <button class="filter-btn active" data-filter="vse"><span lang="cs">Vše</span><span lang="en">All</span></button>
+                    <button class="filter-btn" data-filter="logo">Logo</button>
+                    <button class="filter-btn" data-filter="identita"><span lang="cs">Vizuální identita</span><span lang="en">Visual Identity</span></button>
+                    <button class="filter-btn" data-filter="motion">Motion</button>
+                    <button class="filter-btn" data-filter="web">Web</button>
+                    <button class="filter-btn" data-filter="pismo"><span lang="cs">Písmo</span><span lang="en">Typeface</span></button>
+                    <button class="filter-btn" data-filter="publikace"><span lang="cs">Publikace</span><span lang="en">Publications</span></button>
+                    <button class="filter-btn" data-filter="festival">Festival</button>
+                    <button class="filter-btn" data-filter="design">Design</button>
+                </div>
+
+                <div class="all-projects-grid" id="all-projects-container">
+                </div>
+            </div>
+        </section>
+
+        <!-- DETAIL STRÁNKY PROJEKTU -->
+        <section id="detail" class="section">
+            <div class="site-container">
+                <div class="detail-header">
+                    <div class="detail-title" id="detail-project-name">Project Title</div>
+                    <div>
+                        <div class="detail-description" id="detail-project-desc"></div>
+                        <div class="detail-credits" id="detail-project-credits"></div>
+                        <div class="detail-socials" id="detail-project-links"></div>
+                    </div>
+                </div>
+
+                <div class="detail-gallery" id="detail-project-gallery"></div>
+            </div>
+        </section>
+
+        <!-- SLUŽBY (SERVICES) -->
+        <section id="sluzby" class="section">
+            <div class="site-container">
+                <div class="page-layout">
+                    <div class="page-title-large">
+                        <span lang="cs">Služby</span><span lang="en">Services</span>
+                    </div>
+                    <div class="services-list">
+                        <div class="service-item">
+                            <div class="service-styled-text">
+                                <span lang="cs">Vizuální identita &amp; Brand design</span>
+                                <span lang="en">Visual Identity &amp; Brand Design</span>
+                            </div>
+                            <div class="service-styled-text" lang="cs">Tvorba loga i&nbsp;logotypu, kompletní firemní identity a&nbsp;brand guidelines. Konzistentní vizuální komunikace vychází z&nbsp;přesného systému a&nbsp;čisté švýcarské typografie.</div>
+                            <div class="service-styled-text" lang="en">Creation of logos, logotypes, complete corporate identities, and brand guidelines. Consistent visual communication based on strict grid systems and clean Swiss typography.</div>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-styled-text">
+                                <span lang="cs">Webdesign &amp; Digitální řešení</span>
+                                <span lang="en">Web Design &amp; Digital Solutions</span>
+                            </div>
+                            <div class="service-styled-text" lang="cs">Návrh a&nbsp;vývoj moderních, rychlých a&nbsp;minimalistických webů na&nbsp;míru s&nbsp;promyšleným UX/UI designem. Součástí jsou online bannery a&nbsp;grafika pro&nbsp;sociální sítě v&nbsp;jednotném vizuálním stylu.</div>
+                            <div class="service-styled-text" lang="en">Design and development of modern, fast, and minimalist custom websites with thoughtful UX/UI. Includes online banners and social media graphics in a unified visual style.</div>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-styled-text">
+                                <span lang="cs">Grafický &amp; Produktový design</span>
+                                <span lang="en">Graphic &amp; Product Design</span>
+                            </div>
+                            <div class="service-styled-text" lang="cs">Obalový design, produktové vizualizace a&nbsp;mockupy. Včetně technické přípravy podkladů pro&nbsp;výrobu a&nbsp;tisk.</div>
+                            <div class="service-styled-text" lang="en">Packaging design, product visualizations, and mockups. Includes complete technical prepress and production preparation.</div>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-styled-text">
+                                <span lang="cs">Tiskoviny &amp; Vlastní výroba</span>
+                                <span lang="en">Print &amp; Production</span>
+                            </div>
+                            <div class="service-styled-text" lang="cs">Vizitky, letáky, katalogy, reklamní textil a&nbsp;vody s&nbsp;vlastní etiketou. Kompletní realizace od&nbsp;grafického návrhu po&nbsp;hotový produkt.</div>
+                            <div class="service-styled-text" lang="en">Business cards, flyers, catalogs, promotional textiles, and custom-labeled water. Complete execution from the initial graphic design to the finished product.</div>
+                        </div>
+
+                        <div class="service-item">
+                            <div class="service-styled-text">
+                                <span lang="cs">Vývoj firemního softwaru</span>
+                                <span lang="en">Corporate Software Development</span>
+                            </div>
+                            <div class="service-styled-text" lang="cs">Software na&nbsp;míru, podnikové aplikace a&nbsp;automatizované systémy. Řešení, která optimalizují firemní procesy a&nbsp;zjednodušují řízení podnikání.</div>
+                            <div class="service-styled-text" lang="en">Custom software, enterprise applications, and automated systems. Solutions that optimize corporate processes and simplify business management.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- O MĚ (ABOUT) -->
+        <section id="ome" class="section">
+            <div class="site-container">
+                <div class="page-layout">
+                    <div class="page-title-large">
+                        <span lang="cs">O mně</span><span lang="en">About Me</span>
+                    </div>
+                    <div class="page-content-col">
+                        <div class="about-list">
+                            <div class="about-item">
+                                <div class="about-styled-text" lang="cs">Jmenuji se Denis Zvolánek a&nbsp;od&nbsp;roku 2019 se věnuji grafickému designu a&nbsp;realizaci vizuálních řešení pro&nbsp;značky, firmy i&nbsp;instituce. Za&nbsp;sebou mám stovky úspěšně dokončených projektů, od&nbsp;prvotních návrhů až po&nbsp;finální výrobu.</div>
+                                <div class="about-styled-text" lang="en">My name is Denis Zvolánek, and since 2019 I have been dedicating myself to graphic design and the realization of visual solutions for brands, companies, and institutions. I have hundreds of successfully completed projects under my belt, from initial concepts to final production.</div>
+                            </div>
+                            <div class="about-item">
+                                <div class="about-styled-text" lang="cs">Specializuji se na&nbsp;vizuální identitu, produktový design a&nbsp;reklamní grafiku. Propojuji kreativní přístup s&nbsp;technickými znalostmi a&nbsp;důrazem na&nbsp;detail, aby každý návrh fungoval nejen vizuálně, ale i&nbsp;v&nbsp;praxi. Zajišťuji celý proces od&nbsp;úvodního konceptu přes grafické zpracování a&nbsp;přípravu podkladů až po&nbsp;realizaci hotového produktu.</div>
+                                <div class="about-styled-text" lang="en">I specialize in visual identity, product design, and advertising graphics. I connect a creative approach with technical knowledge and an emphasis on detail, ensuring every design works not just visually, but practically. I manage the entire process from concept through graphic execution and prepress to the final physical product.</div>
+                            </div>
+                            <div class="about-item">
+                                <div class="about-styled-text" lang="cs">Mezi projekty, na&nbsp;kterých jsem spolupracoval, patří The Grand Mark Prague, Stezka korunami stromů, Česko Slovenská SuperStar, Lagardère, město Klášterec nad Ohří, Peklo Čertovina, Mirakulum a&nbsp;<a href="#" class="inline-work-link" onclick="event.preventDefault(); goToSection('prace');">mnoho&nbsp;dalších</a>.</div>
+                                <div class="about-styled-text" lang="en">Among the projects I've collaborated on are The Grand Mark Prague, Treetop Walkway, Czech & Slovak SuperStar, Lagardère, the city of Klášterec nad Ohří, Hell Čertovina, Mirakulum, and <a href="#" class="inline-work-link" onclick="event.preventDefault(); goToSection('prace');">many&nbsp;others</a>.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-image-container">
+                    <img src="IMG_2567.jpg" alt="Denis Zvolánek" class="about-profile-img">
+                </div>
+
+                <div class="about-categories-section">
+                    <div class="page-layout">
+                        <div class="page-title-large">
+                            <span lang="cs">Čím se zabývám</span><span lang="en">My Expertise</span>
+                        </div>
+                        <div class="about-categories-list" id="dynamic-categories-list">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROCES (PROCESS) -->
+        <section id="proces" class="section">
+            <div class="site-container">
+                <div class="page-layout">
+                    <div class="page-title-large">
+                        <span lang="cs">Proces</span><span lang="en">Process</span>
+                    </div>
+                    <div class="page-content-col process-steps-list">
+                        <div lang="cs">
+                            <p><strong>1. Analýza & Strategie</strong><br>Pochopení zadání, cílové skupiny a hledání správného vizuálního směru.</p>
+                            <p><strong>2. Koncept & Návrh</strong><br>Tvorba prvotních skic, typografických řešení a testování v reálném měřítku.</p>
+                            <p><strong>3. Realizace & Detaily</strong><br>Ladění posledních detailů, příprava výstupů pro tisk nebo webové prostředí.</p>
+                        </div>
+                        <div lang="en">
+                            <p><strong>1. Analysis & Strategy</strong><br>Understanding the brief, target audience, and finding the right visual direction.</p>
+                            <p><strong>2. Concept & Design</strong><br>Creating initial sketches, typographic solutions, and testing in real scale.</p>
+                            <p><strong>3. Execution & Details</strong><br>Fine-tuning the final details, preparing deliverables for print or the web.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- KONTAKT (CONTACT) -->
+        <section id="kontakt" class="section">
+            <div class="site-container">
+                <div class="page-layout">
+                    <div class="page-title-large">
+                        <span lang="cs">Kontakt</span><span lang="en">Contact</span>
+                    </div>
+                    <div class="page-content-col">
+                        <div class="styled-text-block">
+                            Denis Zvolánek<br>
+                            Dolní Sokolovec 47<br>
+                            583 01 Chotěboř<br>
+                            <a href="tel:+420602330228">+420 602 330 228</a><br>
+                            <a href="mailto:zvolanek.info@gmail.com">zvolanek.info@gmail.com</a>
+                        </div>
+                        <div class="billing-info">
+                            <div class="billing-title">
+                                <span lang="cs">Fakturační údaje:</span><span lang="en">Billing Details:</span>
+                            </div>
+                            <div>Denis Zvolánek</div>
+                            <div>Dolní Sokolovec 47, 583 01 Chotěboř</div>
+                            <div>
+                                <span lang="cs">IČO: 19329318</span><span lang="en">Company ID: 19329318</span>
+                            </div>
+                            
+                            <div style="margin-top: 12px; color: var(--text-color);">
+                                <span lang="cs">Konzultace: Hlavní město Praha a okolí</span>
+                                <span lang="en">Consultations: Prague and surrounding areas</span>
+                            </div>
+                            <div style="margin-top: 4px; color: var(--text-color);">
+                                <span lang="cs">Fyzická osoba podnikající dle živnostenského zákona.</span>
+                                <span lang="en">Freelancer registered in the Czech Trade Register.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- OCHRANA OSOBNÍCH ÚDAJŮ (PRIVACY POLICY) -->
+        <section id="ochrana-udaju" class="section">
+            <div class="site-container">
+                <!-- ČESKÁ VERZE -->
+                <div class="policy-content" lang="cs">
+                    <div class="page-title-large" style="margin-bottom: 40px;">Prohlášení o ochraně osobních údajů</div>
+                    <p>Tímto dokumentem Vám poskytuji informace o Vašich právech souvisejících s uchováváním a zpracováváním Vašich osobních údajů (dále jako „Denis Zvolánek“). Doporučuji Vám, abyste si informace pečlivě přečetli. Udělal jsem vše pro to, aby byly co nejsrozumitelnější. Pokud by vám i přesto nebylo něco jasné, rád vám jakýkoli pojem nebo pasáž vysvětlím.</p>
+                    <h2>1. Kdo je správcem Vašich osobních údajů?</h2>
+                    <p>Správcem osobních údajů, tedy osobou, která určuje účely a prostředky a rozhoduje o uchování a zpracování Vašich osobních údajů, je:</p>
+                    <p>
+                        <strong>Denis Zvolánek</strong><br>Dolní Sokolovec 47, 583 01 Chotěboř<br>IČO: 19329318<br>Fyzická osoba podnikající dle živnostenského zákona.<br>Telefon: +420 602 330 228<br>Email: zvolanek.info@gmail.com
+                    </p>
+                    <h2>2. Jak a proč jsou Vaše osobní údaje uchovávány a zpracovávány?</h2>
+                    <p>Při zpracovávání osobních údajů se řídím příslušnými právními předpisy, zejména Obecným nařízením Evropského parlamentu a Rady (EU) 2016/679 (GDPR). Veškeré Vaše osobní údaje zpracovávám na základě smlouvy, platných právních předpisů a oprávněného zájmu.</p>
+                    <h2>3. Které Vaše osobní údaje zpracovávám?</h2>
+                    <p>Zpracovávám zejména ty údaje, které jsou nutnou náležitostí uzavřené smlouvy:</p>
+                    <ul>
+                        <li>jméno a příjmení</li>
+                        <li>adresa trvalého pobytu a kontaktní adresa</li>
+                        <li>emailová adresa</li>
+                        <li>číslo mobilního telefonu</li>
+                        <li>IČO, DIČ nebo jiné identifikační údaje</li>
+                    </ul>
+                    <h2>4. Jak chráním Vaše osobní údaje?</h2>
+                    <p>S Vašimi osobními údaji nakládám s řádnou péčí a v souladu s platnými právními předpisy. Vaše osobní údaje chráním v maximální možné míře.</p>
+
+                    <hr style="margin: 60px 0; border: none; border-top: 1px solid var(--gray-border);">
+
+                    <div class="page-title-large" style="margin-bottom: 40px; font-size: 36px;">Pravidla používání cookies</div>
+                    <p>Na těchto webových stránkách používám soubory cookies. Cookies, jejichž použití je nezbytné pro technický chod webu, používám bez vašeho souhlasu. Ostatní cookies (analytické a marketingové) ukládám do vašeho zařízení pouze na základě vašeho předchozího souhlasu.</p>
+                    
+                    <button class="cookie-reset-link" onclick="resetCookiesAndShowBanner()">Změnit nastavení cookies</button>
+                </div>
+
+                <!-- ANGLICKÁ VERZE -->
+                <div class="policy-content" lang="en">
+                    <div class="page-title-large" style="margin-bottom: 40px;">Privacy Policy</div>
+                    <p>This document provides information about your rights related to the storage and processing of your personal data. I recommend reading this information carefully. I have done my best to make it as comprehensible as possible. If anything remains unclear, I will gladly explain it.</p>
+                    <h2>1. Who is the Data Controller?</h2>
+                    <p>The controller of personal data, meaning the person determining the purposes and means of processing, is:</p>
+                    <p>
+                        <strong>Denis Zvolánek</strong><br>Dolní Sokolovec 47, 583 01 Chotěboř<br>Company ID: 19329318<br>Freelancer registered in the Czech Trade Register.<br>Phone: +420 602 330 228<br>Email: zvolanek.info@gmail.com
+                    </p>
+                    <h2>2. How and why is your data processed?</h2>
+                    <p>When processing personal data, I follow relevant legal regulations, particularly the GDPR. All your personal data is processed on the basis of a contract, valid legal regulations, and legitimate interest.</p>
+                    <h2>3. What personal data do I process?</h2>
+                    <p>I process primarily data that is necessary for the conclusion of a contract:</p>
+                    <ul>
+                        <li>Name and surname</li>
+                        <li>Permanent and contact address</li>
+                        <li>Email address</li>
+                        <li>Mobile phone number</li>
+                        <li>Company ID, VAT ID or other identification data</li>
+                    </ul>
+                    <h2>4. How do I protect your data?</h2>
+                    <p>I handle your personal data with due care and in accordance with applicable laws. Your data is protected to the maximum possible extent.</p>
+
+                    <hr style="margin: 60px 0; border: none; border-top: 1px solid var(--gray-border);">
+
+                    <div class="page-title-large" style="margin-bottom: 40px; font-size: 36px;">Cookie Policy</div>
+                    <p>This website uses cookies. Cookies necessary for the technical operation of the site are used without your consent. Other cookies (analytical and marketing) are stored on your device only based on your prior consent.</p>
+                    
+                    <button class="cookie-reset-link" onclick="resetCookiesAndShowBanner()">Change cookie settings</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- BRAND BANNER -->
+        <div class="site-container">
+            <div class="brand-banner-section">
+                <div class="brand-banner-title">zvolánek.design</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- PATKA (FOOTER) -->
+    <footer>
+        <div class="site-container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="styled-text-block">
+                        Dolní Sokolovec 47<br>
+                        583 01 Chotěboř<br>
+                        <a href="mailto:zvolanek.info@gmail.com">zvolanek.info@gmail.com</a><br>
+                        <a href="tel:+420602330228">+420 602 330 228</a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <ul>
+                        <li><a href="#" class="nav-link" data-target="prace"><span lang="cs">Práce</span><span lang="en">Work</span></a></li>
+                        <li><a href="#" class="nav-link" data-target="sluzby"><span lang="cs">Služby</span><span lang="en">Services</span></a></li>
+                        <li><a href="#" class="nav-link" data-target="ome"><span lang="cs">O mně</span><span lang="en">About</span></a></li>
+                        <li><a href="#" class="nav-link" data-target="proces"><span lang="cs">Proces</span><span lang="en">Process</span></a></li>
+                        <li><a href="#" class="nav-link" data-target="kontakt"><span lang="cs">Kontakt</span><span lang="en">Contact</span></a></li>
+                    </ul>
+                </div>
+                <div class="footer-col footer-col-right">
+                    <ul>
+                        <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
+                        <li><a href="https://linkedin.com" target="_blank">Linkedin</a></li>
+                        <li><a href="https://behance.net" target="_blank">Behance</a></li>
+                        <li><a href="https://awwwards.com" target="_blank">Awwwards</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>&copy; <span id="current-year"></span> zvolánek.design</div>
+                <div>
+                    <a href="#" onclick="goToSection('ochrana-udaju'); return false;">
+                        <span lang="cs">Prohlášení o ochraně osobních údajů & Cookies</span>
+                        <span lang="en">Privacy Policy & Cookies</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SKRIPTY -->
+    <script>
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        const cookieBanner = document.getElementById('cookie-banner');
+        const acceptAllBtn = document.getElementById('cookie-accept-all');
+        const acceptEssentialBtn = document.getElementById('cookie-accept-essential');
+        const CONSENT_KEY = 'zvolanek_cookie_consent_preferences';
+
+        function loadScriptsBasedOnConsent(consentSettings) {}
+
+        function saveConsent(allowAnalytics, allowMarketing) {
+            const consentSettings = { essential: true, analytics: allowAnalytics, marketing: allowMarketing, timestamp: new Date().toISOString() };
+            try { localStorage.setItem(CONSENT_KEY, JSON.stringify(consentSettings)); } catch (e) {}
+            cookieBanner.style.display = 'none';
+            loadScriptsBasedOnConsent(consentSettings);
+        }
+
+        function checkCookieConsent() {
+            try {
+                const savedConsent = localStorage.getItem(CONSENT_KEY);
+                if (!savedConsent) cookieBanner.style.display = 'block';
+                else loadScriptsBasedOnConsent(JSON.parse(savedConsent));
+            } catch (e) { cookieBanner.style.display = 'block'; }
+        }
+
+        function resetCookiesAndShowBanner() {
+            try { localStorage.removeItem(CONSENT_KEY); } catch (e) {}
+            cookieBanner.style.display = 'block';
+            alert(currentLang === 'cs' ? "Vaše volba cookies byla vymazána." : "Your cookie settings have been reset.");
+        }
+
+        acceptAllBtn.addEventListener('click', () => saveConsent(true, true));
+        acceptEssentialBtn.addEventListener('click', () => saveConsent(false, false));
+        checkCookieConsent();
+
+        // DATABÁZE PROJEKTŮ S PŘEKLADY
+        const projectsData = [
+            {
+                title: "Colours of Ostrava 2025",
+                category: "identita web motion festival",
+                image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+                desc_cs: "Colours of Ostrava vstoupila do svého 22. ročníku s novou tváří. Vytvořili jsme variabilní vizuální systém, jehož barevnost vychází přímo ze života na festivalu.",
+                desc_en: "Colours of Ostrava entered its 22nd year with a new face. We created a variable visual system whose colors are derived directly from the life at the festival.",
+                credits_cs: [{ label: "Klient", value: "Colours of Ostrava" }, { label: "Rok", value: "2025" }],
+                credits_en: [{ label: "Client", value: "Colours of Ostrava" }, { label: "Year", value: "2025" }],
+                links: [{ name: "Web", url: "#" }],
+                gallery: ["https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80"]
+            },
+            {
+                title: "59. MFF Karlovy Vary",
+                category: "identita publikace design festival",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+                desc_cs: "Vizuální styl pro 59. ročník Mezinárodního filmového festivalu Karlovy Vary staví na čisté typografii a dynamickém rytmu.",
+                desc_en: "The visual style for the 59th Karlovy Vary International Film Festival is based on clean typography and dynamic rhythm.",
+                credits_cs: [{ label: "Klient", value: "MFF Karlovy Vary" }, { label: "Rok", value: "2025" }],
+                credits_en: [{ label: "Client", value: "MFF Karlovy Vary" }, { label: "Year", value: "2025" }],
+                links: [],
+                gallery: ["https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=1600&q=80"]
+            }
+        ];
+
+        let currentLang = 'cs'; // Globální proměnná jazyka
+
+        function renderProjects() {
+            const homeContainer = document.getElementById('home-projects-container');
+            const allContainer = document.getElementById('all-projects-container');
+            if (!homeContainer || !allContainer) return;
+
+            let htmlHome = '';
+            let htmlAll = '';
+
+            projectsData.forEach((p, index) => {
+                const cardHTML = `
+                    <div class="project-card" data-category="${p.category}" onclick="openDetail('${p.title}')">
+                        <div class="project-media"><img src="${p.image}" alt="${p.title}"></div>
+                        <div class="project-meta-title">${p.title}</div>
+                    </div>
+                `;
+                htmlAll += cardHTML;
+                if (index < 12) htmlHome += cardHTML;
+            });
+
+            homeContainer.innerHTML = htmlHome;
+            allContainer.innerHTML = htmlAll;
+        }
+        renderProjects();
+
+        function renderAboutCategories() {
+            const filterBtns = document.querySelectorAll('#prace-filters .filter-btn:not([data-filter="vse"])');
+            const listContainer = document.getElementById('dynamic-categories-list');
+            if (!listContainer) return;
+            let html = '';
+            filterBtns.forEach(btn => {
+                const filterValue = btn.getAttribute('data-filter');
+                const filterName = btn.innerHTML; // Obsahuje <span> jazyky
+                html += `<a onclick="goToWorkAndFilter('${filterValue}')">${filterName}</a>`;
+            });
+            listContainer.innerHTML = html;
+        }
+
+        function goToWorkAndFilter(filterValue) {
+            goToSection('prace');
+            setTimeout(() => {
+                const filterBtn = document.querySelector(`#prace-filters .filter-btn[data-filter="${filterValue}"]`);
+                if (filterBtn) filterBtn.click();
+            }, 50);
+        }
+        renderAboutCategories();
+
+        function openDetail(title) {
+            const project = projectsData.find(p => p.title === title);
+            if (!project) return;
+
+            document.getElementById('detail-project-name').textContent = project.title;
+            // Výběr popisku podle jazyka
+            document.getElementById('detail-project-desc').innerHTML = currentLang === 'cs' ? project.desc_cs : project.desc_en;
+
+            let creditsHTML = '';
+            const creditsArray = currentLang === 'cs' ? project.credits_cs : project.credits_en;
+            creditsArray.forEach(c => {
+                creditsHTML += `<div><strong>${c.label}:</strong> ${c.value}</div>`;
+            });
+            document.getElementById('detail-project-credits').innerHTML = creditsHTML;
+
+            let linksHTML = '';
+            if (project.links && project.links.length > 0) {
+                project.links.forEach(l => { linksHTML += `<a href="${l.url}" target="_blank">${l.name}</a>`; });
+            }
+            document.getElementById('detail-project-links').innerHTML = linksHTML;
+
+            let galleryHTML = '';
+            if (project.gallery && project.gallery.length > 0) {
+                galleryHTML += `<img src="${project.gallery[0]}" alt="${project.title}">`;
+                if (project.gallery.length > 1) {
+                    galleryHTML += `<div class="detail-gallery-row">`;
+                    for (let i = 1; i < project.gallery.length; i++) {
+                        galleryHTML += `<img src="${project.gallery[i]}" alt="${project.title} detail ${i}">`;
+                    }
+                    galleryHTML += `</div>`;
+                }
+            }
+            document.getElementById('detail-project-gallery').innerHTML = galleryHTML;
+
+            goToSection('detail');
+        }
+
+        // --- PŘEPÍNAČ JAZYKŮ ---
+        const langBtn = document.getElementById('lang-toggle-btn');
+        langBtn.addEventListener('click', () => {
+            if (document.body.classList.contains('lang-cs')) {
+                document.body.classList.replace('lang-cs', 'lang-en');
+                langBtn.textContent = 'CZ';
+                currentLang = 'en';
+            } else {
+                document.body.classList.replace('lang-en', 'lang-cs');
+                langBtn.textContent = 'EN';
+                currentLang = 'cs';
+            }
+            
+            // Překreslit detail projektu, pokud je otevřený, aby se změnil jazyk
+            const detailTitle = document.getElementById('detail-project-name').textContent;
+            if (document.getElementById('detail').classList.contains('active') && detailTitle) {
+                openDetail(detailTitle);
+            }
+        });
+
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.section');
+        const header = document.getElementById('main-header');
+
+        function updateHeaderState() {
+            const isHome = document.getElementById('domu').classList.contains('active');
+            if (isHome) document.body.classList.add('home-active');
+            else document.body.classList.remove('home-active');
+
+            if (isHome && window.scrollY < 100) header.classList.add('header-transparent');
+            else header.classList.remove('header-transparent');
+        }
+        updateHeaderState();
+
+        function goToSection(targetId) {
+            navLinks.forEach(l => l.classList.remove('active'));
+            document.querySelectorAll(`.nav-link[data-target="${targetId}"]`).forEach(l => l.classList.add('active'));
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(targetId).classList.add('active');
+            updateHeaderState();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                goToSection(link.getAttribute('data-target'));
+            });
+        });
+
+        let lastScrollY = window.scrollY;
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > 60 && currentScrollY > lastScrollY) header.classList.add('header-hidden');
+            else header.classList.remove('header-hidden');
+            updateHeaderState();
+            lastScrollY = currentScrollY;
+        });
+
+        const track = document.getElementById('hero-track');
+        let currentPos = 0;
+        function stepCarousel() {
+            currentPos++;
+            track.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+            track.style.transform = `translate3d(-${currentPos * 33.333333}vw, 0, 0)`;
+            if (currentPos >= 3) {
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    currentPos = 0;
+                    track.style.transform = `translate3d(0, 0, 0)`;
+                }, 800);
+            }
+        }
+        setInterval(stepCarousel, 3500);
+
+        function initRapidStacks() {
+            document.querySelectorAll('.rapid-stack').forEach(stack => {
+                const images = stack.querySelectorAll('.stack-image');
+                if (images.length <= 1) return;
+                let currentIndex = 0;
+                setInterval(() => {
+                    images[currentIndex].classList.remove('active');
+                    currentIndex = (currentIndex + 1) % images.length;
+                    images[currentIndex].classList.add('active');
+                }, 800);
+            });
+        }
+        initRapidStacks();
+
+        document.querySelectorAll('.filters').forEach(filtersWrapper => {
+            const boldBtns = filtersWrapper.querySelectorAll('.filter-btn');
+            boldBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    boldBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    const filter = btn.getAttribute('data-filter');
+                    
+                    let nextEl = filtersWrapper.nextElementSibling;
+                    while (nextEl && !nextEl.className.includes('projects-grid')) {
+                        nextEl = nextEl.nextElementSibling;
+                    }
+                    if (nextEl) {
+                        const cards = nextEl.querySelectorAll('.project-card');
+                        let visibleCount = 0;
+                        let maxVisible = nextEl.classList.contains('home-projects-grid') ? (window.innerWidth <= 640 ? 3 : window.innerWidth <= 1024 ? 6 : 12) : Infinity;
+                        
+                        cards.forEach(card => {
+                            if (filter === 'vse' || card.getAttribute('data-category').includes(filter)) {
+                                if (visibleCount < maxVisible) { card.style.display = 'flex'; visibleCount++; }
+                                else card.style.display = 'none';
+                            } else card.style.display = 'none';
+                        });
+                    }
+                });
+            });
+        });
+        document.querySelectorAll('.filter-btn[data-filter="vse"]').forEach(btn => btn.click());
+    </script>
+</body>
+</html>
